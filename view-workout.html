@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AthliTrack - View Workout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>AthliTrack</h1>
+            <nav class="nav">
+                <a href="index.html" class="nav-link active">Workouts</a>
+                <a href="exercises.html" class="nav-link">Exercises</a>
+                <a href="templates.html" class="nav-link">Templates</a>
+            </nav>
+        </header>
+
+        <main class="content">
+            <div class="btn-group">
+                <button id="backButton" class="btn btn-secondary">Back to Workouts</button>
+            </div>
+            
+            <div id="workoutDetails">
+                <h2 id="workoutName">Loading...</h2>
+                <div class="workout-info">
+                    <p><strong>Start:</strong> <span id="workoutStart"></span></p>
+                    <p><strong>End:</strong> <span id="workoutEnd"></span></p>
+                    <p><strong>Duration:</strong> <span id="workoutDuration"></span></p>
+                </div>
+                
+                <h3>Exercises</h3>
+                <div id="exercisesList">
+                    <!-- Exercise entries will be added dynamically -->
+                </div>
+            </div>
+            
+            <div class="btn-group" style="margin-top: 30px;">
+                <button id="editWorkoutBtn" class="btn btn-secondary">Edit Workout</button>
+                <button id="saveAsTemplateBtn" class="btn">Save as Template</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Save as Template Modal -->
+    <div class="modal-backdrop" id="templateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Save as Template</h3>
+                <button class="modal-close" id="closeTemplateModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="templateName">Template Name</label>
+                    <input type="text" id="templateName" class="form-control" required>
+                    <div class="form-error" id="templateNameError"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelTemplateBtn">Cancel</button>
+                <button class="btn" id="saveTemplateBtn">Save Template</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="view-workout.js"></script>
+</body>
+
+</html>
