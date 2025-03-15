@@ -1,4 +1,4 @@
-// Mock data for workouts (will be replaced with actual DB data later)
+// Mock data
 let workouts = [
     {
         id: 1,
@@ -22,7 +22,6 @@ let workouts = [
     }
 ];
 
-// DOM Elements
 const workoutsTable = document.getElementById('workoutsTable');
 const addWorkoutBtn = document.getElementById('addWorkoutBtn');
 const deleteModal = document.getElementById('deleteModal');
@@ -32,13 +31,11 @@ const confirmDelete = document.getElementById('confirmDelete');
 
 let workoutToDelete = null;
 
-// Format date for display
 function formatDateTime(dateTimeString) {
     const date = new Date(dateTimeString);
     return date.toLocaleString();
 }
 
-// Calculate duration between two dates
 function calculateDuration(startDateTime, endDateTime) {
     const start = new Date(startDateTime);
     const end = new Date(endDateTime);
@@ -50,7 +47,6 @@ function calculateDuration(startDateTime, endDateTime) {
     return `${hours}h ${minutes}m`;
 }
 
-// Populate workouts table
 function renderWorkouts() {
     const tbody = workoutsTable.querySelector('tbody');
     tbody.innerHTML = '';
@@ -71,14 +67,12 @@ function renderWorkouts() {
         tbody.appendChild(tr);
     });
     
-    // Add event listeners to the buttons
     const actionButtons = tbody.querySelectorAll('button[data-action]');
     actionButtons.forEach(button => {
         button.addEventListener('click', handleWorkoutAction);
     });
 }
 
-// Handle workout actions (view, edit, delete)
 function handleWorkoutAction(e) {
     const action = e.target.getAttribute('data-action');
     const workoutId = parseInt(e.target.getAttribute('data-id'));
@@ -97,12 +91,10 @@ function handleWorkoutAction(e) {
     }
 }
 
-// Add workout button click handler
 addWorkoutBtn.addEventListener('click', () => {
     window.location.href = 'add-workout.html';
 });
 
-// Delete modal event handlers
 closeDeleteModal.addEventListener('click', () => {
     deleteModal.style.display = 'none';
     workoutToDelete = null;
@@ -115,25 +107,19 @@ cancelDelete.addEventListener('click', () => {
 
 confirmDelete.addEventListener('click', () => {
     if (workoutToDelete !== null) {
-        // Remove workout from array (will be replaced with DB delete later)
         workouts = workouts.filter(workout => workout.id !== workoutToDelete);
-        // Re-render the table
         renderWorkouts();
-        // Hide modal
         deleteModal.style.display = 'none';
         workoutToDelete = null;
     }
 });
 
-// Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
     renderWorkouts();
     
-    // Save workouts to localStorage (temporary storage)
     localStorage.setItem('workouts', JSON.stringify(workouts));
 });
 
-// Load workouts from localStorage if available
 window.addEventListener('load', () => {
     const savedWorkouts = localStorage.getItem('workouts');
     if (savedWorkouts) {

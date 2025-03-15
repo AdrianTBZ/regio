@@ -1,4 +1,4 @@
-// Mock data for workout templates (will be replaced with actual DB data later)
+// Mock data
 let templates = [
     {
         id: 1,
@@ -25,9 +25,8 @@ let templates = [
             { exerciseId: 3, sets: 1, reps: 20 }
         ]
     }
-];
+]; 
 
-// DOM Elements
 const templatesTable = document.getElementById('templatesTable');
 const addTemplateBtn = document.getElementById('addTemplateBtn');
 const deleteModal = document.getElementById('deleteModal');
@@ -55,15 +54,12 @@ function renderTemplates() {
         `;
         tbody.appendChild(tr);
     });
-    
-    // Add event listeners to the buttons
+
     const actionButtons = tbody.querySelectorAll('button[data-action]');
     actionButtons.forEach(button => {
         button.addEventListener('click', handleTemplateAction);
     });
 }
-
-// Handle template actions (use, edit, delete)
 function handleTemplateAction(e) {
     const action = e.target.getAttribute('data-action');
     const templateId = parseInt(e.target.getAttribute('data-id'));
@@ -82,12 +78,10 @@ function handleTemplateAction(e) {
     }
 }
 
-// Add template button click handler
 addTemplateBtn.addEventListener('click', () => {
     window.location.href = 'add-template.html';
 });
 
-// Delete modal event handlers
 closeDeleteModal.addEventListener('click', () => {
     deleteModal.style.display = 'none';
     templateToDelete = null;
@@ -100,25 +94,19 @@ cancelDelete.addEventListener('click', () => {
 
 confirmDelete.addEventListener('click', () => {
     if (templateToDelete !== null) {
-        // Remove template from array (will be replaced with DB delete later)
         templates = templates.filter(template => template.id !== templateToDelete);
-        // Save to localStorage and re-render
         localStorage.setItem('templates', JSON.stringify(templates));
         renderTemplates();
-        // Hide modal
         deleteModal.style.display = 'none';
         templateToDelete = null;
     }
 });
 
-// Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
-    // Try to load templates from localStorage first
     const savedTemplates = localStorage.getItem('templates');
     if (savedTemplates) {
         templates = JSON.parse(savedTemplates);
     } else {
-        // If not found in localStorage, use default data and save it
         localStorage.setItem('templates', JSON.stringify(templates));
     }
     

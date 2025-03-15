@@ -1,4 +1,3 @@
-// DOM elements
 const workoutForm = document.getElementById('workoutForm');
 const workoutName = document.getElementById('workoutName');
 const startDateTime = document.getElementById('startDateTime');
@@ -8,7 +7,6 @@ const exercisesList = document.getElementById('exercisesList');
 const cancelBtn = document.getElementById('cancelBtn');
 const saveWorkoutBtn = document.getElementById('saveWorkoutBtn');
 
-// Exercise modal elements
 const exerciseModal = document.getElementById('exerciseModal');
 const closeExerciseModal = document.getElementById('closeExerciseModal');
 const exerciseSelect = document.getElementById('exerciseSelect');
@@ -17,21 +15,17 @@ const repsContainer = document.getElementById('repsContainer');
 const cancelExerciseBtn = document.getElementById('cancelExerciseBtn');
 const addExerciseToWorkoutBtn = document.getElementById('addExerciseToWorkoutBtn');
 
-// Store the current workout's exercises
 let workoutExercises = [];
 let exercises = [];
 let editingExerciseIndex = -1;
 
-// Check if we're using a template
 const urlParams = new URLSearchParams(window.location.search);
 const templateId = urlParams.get('templateId');
 
-// Initialize form with current date and time
 function initializeDateTimeFields() {
     const now = new Date();
     const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
     
-    // Format for datetime-local input
     const formatDateTime = (date) => {
         return date.toISOString().slice(0, 16);
     };
@@ -46,7 +40,6 @@ function loadExercises() {
     if (savedExercises) {
         exercises = JSON.parse(savedExercises);
         
-        // Populate exercise select dropdown
         exerciseSelect.innerHTML = '';
         exercises.forEach(exercise => {
             const option = document.createElement('option');
@@ -71,7 +64,6 @@ function applyTemplate() {
         if (template) {
             workoutName.value = template.name;
             
-            // Add exercises from template
             template.exercises.forEach(templateExercise => {
                 const exercise = exercises.find(e => e.id === templateExercise.exerciseId);
                 if (exercise) {
@@ -90,7 +82,6 @@ function applyTemplate() {
     }
 }
 
-// Generate rep input fields based on sets
 function generateRepInputs(sets, existingReps = []) {
     repsContainer.innerHTML = '';
     
@@ -118,7 +109,6 @@ function generateRepInputs(sets, existingReps = []) {
     }
 }
 
-// Render the exercises list
 function renderExercisesList() {
     exercisesList.innerHTML = '';
     
@@ -151,7 +141,6 @@ function renderExercisesList() {
         exercisesList.appendChild(exerciseDiv);
     });
     
-    // Add event listeners to edit and remove buttons
     const editButtons = document.querySelectorAll('.edit-exercise');
     const removeButtons = document.querySelectorAll('.remove-exercise');
     
@@ -178,17 +167,13 @@ function openExerciseModalForEdit(index) {
     const exercise = workoutExercises[index];
     editingExerciseIndex = index;
     
-    // Set values in the modal
     exerciseSelect.value = exercise.id;
     exerciseSets.value = exercise.sets;
     
-    // Generate rep inputs
     generateRepInputs(exercise.sets, exercise.reps);
     
-    // Change button text
     addExerciseToWorkoutBtn.textContent = 'Update Exercise';
     
-    // Show modal
     exerciseModal.style.display = 'flex';
 }
 
@@ -197,19 +182,16 @@ function addExerciseToWorkout() {
     const exerciseId = parseInt(exerciseSelect.value);
     const sets = parseInt(exerciseSets.value);
     
-    // Get reps for each set
     const reps = [];
     for (let i = 1; i <= sets; i++) {
         const repInput = document.getElementById(`reps${i}`);
         reps.push(parseInt(repInput.value));
     }
     
-    // Find the selected exercise
     const exercise = exercises.find(e => e.id === exerciseId);
     
     if (exercise) {
         if (editingExerciseIndex >= 0) {
-            // Update existing exercise
             workoutExercises[editingExerciseIndex] = {
                 id: exerciseId,
                 name: exercise.name,
@@ -218,7 +200,6 @@ function addExerciseToWorkout() {
             };
             editingExerciseIndex = -1;
         } else {
-            // Add new exercise
             workoutExercises.push({
                 id: exerciseId,
                 name: exercise.name,
@@ -227,10 +208,8 @@ function addExerciseToWorkout() {
             });
         }
         
-        // Re-render the list
         renderExercisesList();
         
-        // Reset and close modal
         addExerciseToWorkoutBtn.textContent = 'Add to Workout';
         exerciseModal.style.display = 'none';
     }
@@ -240,22 +219,18 @@ function addExerciseToWorkout() {
 function validateForm() {
     let isValid = true;
     
-    // Reset error messages
     document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
     
-    // Validate workout name
     if (!workoutName.value.trim()) {
         document.getElementById('workoutNameError').textContent = 'Workout name is required';
         isValid = false;
     }
     
-    // Validate start date and time
     if (!startDateTime.value) {
         document.getElementById('startDateTimeError').textContent = 'Start date and time is required';
         isValid = false;
     }
     
-    // Validate end date and time
     if (!endDateTime.value) {
         document.getElementById('endDateTimeError').textContent = 'End date and time is required';
         isValid = false;
@@ -264,7 +239,6 @@ function validateForm() {
         isValid = false;
     }
     
-    // Validate that there's at least one exercise
     if (workoutExercises.length === 0) {
         alert('Please add at least one exercise to the workout');
         isValid = false;
@@ -281,14 +255,12 @@ function saveWorkout(e) {
         return;
     }
     
-    // Get existing workouts
     let workouts = [];
     const savedWorkouts = localStorage.getItem('workouts');
     if (savedWorkouts) {
         workouts = JSON.parse(savedWorkouts);
     }
     
-    // Create new workout object
     const newWorkout = {
         id: Math.max(...workouts.map(w => w.id), 0) + 1,
         name: workoutName.value.trim(),
@@ -301,33 +273,24 @@ function saveWorkout(e) {
         }))
     };
     
-    // Add to workouts array
     workouts.push(newWorkout);
     
-    // Save to localStorage
     localStorage.setItem('workouts', JSON.stringify(workouts));
     
-    // Redirect to workouts page
     window.location.href = 'index.html';
 }
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize datetime fields with current time
     initializeDateTimeFields();
     
-    // Load exercises
     loadExercises();
     
-    // Apply template if specified
     applyTemplate();
     
-    // Initialize the exercises list
     renderExercisesList();
     
-    // Add event listeners
     addExerciseBtn.addEventListener('click', () => {
-        // Reset modal
         exerciseForm.reset();
         editingExerciseIndex = -1;
         generateRepInputs(3);

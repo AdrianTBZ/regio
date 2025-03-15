@@ -1,4 +1,4 @@
-// Mock data for exercises (will be replaced with actual DB data later)
+// Mock data
 let exercises = [
     {
         id: 1,
@@ -26,7 +26,6 @@ let exercises = [
     }
 ];
 
-// DOM Elements
 const exercisesTable = document.getElementById('exercisesTable');
 const addExerciseBtn = document.getElementById('addExerciseBtn');
 const exerciseModal = document.getElementById('exerciseModal');
@@ -51,7 +50,6 @@ const closeProgress = document.getElementById('closeProgress');
 let exerciseToDelete = null;
 let isEditing = false;
 
-// Populate exercises table
 function renderExercises() {
     const tbody = exercisesTable.querySelector('tbody');
     tbody.innerHTML = '';
@@ -70,15 +68,13 @@ function renderExercises() {
         `;
         tbody.appendChild(tr);
     });
-    
-    // Add event listeners to the buttons
+
     const actionButtons = tbody.querySelectorAll('button[data-action]');
     actionButtons.forEach(button => {
         button.addEventListener('click', handleExerciseAction);
     });
 }
 
-// Handle exercise actions (progress, edit, delete)
 function handleExerciseAction(e) {
     const action = e.target.getAttribute('data-action');
     const exerciseId = parseInt(e.target.getAttribute('data-id'));
@@ -99,10 +95,8 @@ function handleExerciseAction(e) {
     }
 }
 
-// Show exercise modal for add/edit
 function showExerciseModal(exercise = null) {
     if (exercise) {
-        // Edit mode
         exerciseModalTitle.textContent = 'Edit Exercise';
         exerciseId.value = exercise.id;
         exerciseName.value = exercise.name;
@@ -110,14 +104,12 @@ function showExerciseModal(exercise = null) {
         exerciseType.value = exercise.type;
         isEditing = true;
     } else {
-        // Add mode
         exerciseModalTitle.textContent = 'Add Exercise';
         exerciseForm.reset();
         exerciseId.value = '';
         isEditing = false;
     }
-    
-    // Clear validation errors
+
     document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
     
     exerciseModal.style.display = 'flex';
@@ -127,22 +119,18 @@ function showExerciseModal(exercise = null) {
 function validateExerciseForm() {
     let isValid = true;
     
-    // Reset error messages
     document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
-    
-    // Validate name
+
     if (!exerciseName.value.trim()) {
         document.getElementById('exerciseNameError').textContent = 'Name is required';
         isValid = false;
     }
-    
-    // Validate description
+
     if (!exerciseDescription.value.trim()) {
         document.getElementById('exerciseDescriptionError').textContent = 'Description is required';
         isValid = false;
     }
-    
-    // Validate type
+
     if (!exerciseType.value) {
         document.getElementById('exerciseTypeError').textContent = 'Type is required';
         isValid = false;
@@ -164,7 +152,6 @@ function saveExerciseData() {
     };
     
     if (isEditing) {
-        // Update existing exercise
         const id = parseInt(exerciseId.value);
         const index = exercises.findIndex(ex => ex.id === id);
         if (index !== -1) {
@@ -172,25 +159,20 @@ function saveExerciseData() {
             exercises[index] = exercise;
         }
     } else {
-        // Add new exercise
         exercise.id = Math.max(...exercises.map(ex => ex.id), 0) + 1;
         exercises.push(exercise);
     }
-    
-    // Save to localStorage and re-render
+
     localStorage.setItem('exercises', JSON.stringify(exercises));
     renderExercises();
-    
-    // Close modal
+
     exerciseModal.style.display = 'none';
 }
 
-// Add exercise button click handler
 addExerciseBtn.addEventListener('click', () => {
     showExerciseModal();
 });
 
-// Exercise modal event handlers
 closeExerciseModal.addEventListener('click', () => {
     if (confirm('Do you want to close without saving? Any changes will be lost.')) {
         exerciseModal.style.display = 'none';
@@ -205,7 +187,6 @@ cancelExercise.addEventListener('click', () => {
 
 saveExercise.addEventListener('click', saveExerciseData);
 
-// Delete modal event handlers
 closeDeleteModal.addEventListener('click', () => {
     deleteModal.style.display = 'none';
     exerciseToDelete = null;
@@ -218,18 +199,14 @@ cancelDelete.addEventListener('click', () => {
 
 confirmDelete.addEventListener('click', () => {
     if (exerciseToDelete !== null) {
-        // Remove exercise from array (will be replaced with DB delete later)
         exercises = exercises.filter(exercise => exercise.id !== exerciseToDelete);
-        // Save to localStorage and re-render
         localStorage.setItem('exercises', JSON.stringify(exercises));
         renderExercises();
-        // Hide modal
         deleteModal.style.display = 'none';
         exerciseToDelete = null;
     }
 });
 
-// Progress modal event handlers
 closeProgressModal.addEventListener('click', () => {
     progressModal.style.display = 'none';
 });
@@ -238,14 +215,11 @@ closeProgress.addEventListener('click', () => {
     progressModal.style.display = 'none';
 });
 
-// Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
-    // Try to load exercises from localStorage first
     const savedExercises = localStorage.getItem('exercises');
     if (savedExercises) {
         exercises = JSON.parse(savedExercises);
     } else {
-        // If not found in localStorage, use default data and save it
         localStorage.setItem('exercises', JSON.stringify(exercises));
     }
     
